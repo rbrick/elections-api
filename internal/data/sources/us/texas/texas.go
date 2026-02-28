@@ -1,11 +1,11 @@
 package texas
 
 import (
-	"github.com/rbrick/elections/internal/race"
+	"github.com/rbrick/elections/internal/models"
 )
 
 const (
-	BaseURL = "https://results.texas-election.com/static/data/election"
+	TexasResultsURL = "https://results.texas-election.com/static/data/election"
 )
 
 /*
@@ -17,6 +17,9 @@ First, get the version from https://results.texas-election.com/static/data/Versi
 Then fetch election constants from https://results.texas-election.com/static/data/ElectionConstants_{versionNo}.json
 
 The election constants provides the list of available elections and their IDs.
+
+civix app: https://goelect.txelections.civixapps.com/api-ivis-system/api/v1/getFile?type=EVR_EARLYVOTING&electionId=53814&electionDate=02/27/2026
+
 */
 
 type Version struct {
@@ -30,8 +33,6 @@ type ElectionConstants struct {
 
 type Source struct{}
 
-func (*Source) Version() {}
-
-func (ts *Source) GetRaces() ([]race.Race, error) {
-	return []race.Race{}, nil
+func (ts *Source) GetElections() ([]models.Election, error) {
+	return []models.Election{}, nil
 }

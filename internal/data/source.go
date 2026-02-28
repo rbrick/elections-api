@@ -1,7 +1,7 @@
 package data
 
-import "github.com/rbrick/elections/internal/race"
+import "github.com/rbrick/elections/internal/models"
 
 type Source interface {
-	GetRaces() ([]race.Race, error)
+	GetElections() ([]models.Election, error)
 }
