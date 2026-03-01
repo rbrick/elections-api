@@ -3,3 +3,9 @@ elections
 *.json
 *.s
 *.env
+*.db
+*.log
+*.sqlite
+*.sqlite3
+*.db3
+*.db2

@@ -1,10 +1,14 @@
 package main
 
 import (
+	"log"
+
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/rbrick/elections/internal/data/sources/us/texas"
+	"github.com/rbrick/elections/internal/db"
 	"github.com/rbrick/elections/internal/env"
+	"gorm.io/gorm"
 )
 
 func init() {
@@ -13,6 +17,13 @@ func init() {
 
 func main() {
 	app := gin.Default()
+
+	gormDb, err := db.Init(&gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println(gormDb)
 
 	// Gets available elections
 	app.GET("/:country/:region/elections", func(ctx *gin.Context) {
