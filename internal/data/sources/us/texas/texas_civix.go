@@ -67,6 +67,14 @@ type CivixEarlyVotingElectionData struct {
 	Counties        []CivixEarlyVotingCountyData `json:"turnout_by_county"`
 }
 
+func (e CivixEarlyVotingElectionData) TotalVotes() int {
+	total := 0
+	for _, county := range e.Counties {
+		total += county.TotalInPersonVotes + county.MailInVotes
+	}
+	return total
+}
+
 type CivixEarlyVotingResponse struct {
 	Elections []CivixAvailableElection `json:"elections"`
 }
@@ -89,6 +97,7 @@ func (c *client) makeCivixRequest(url string) (*CivixFileResponse, error) {
 	defer resp.Body.Close()
 
 	var civixResp CivixFileResponse
+
 	if err := json.NewDecoder(resp.Body).Decode(&civixResp); err != nil {
 		return nil, err
 	}
@@ -103,8 +112,14 @@ func (c *client) GetAvailableElections() (*CivixEarlyVotingResponse, error) {
 		return nil, err
 	}
 
+	decoded, err := base64.StdEncoding.DecodeString(civixResp.Upload)
+	if err != nil {
+		return nil, err
+	}
+
 	var electionsResp CivixEarlyVotingResponse
-	if err := civixResp.Decode(&electionsResp); err != nil {
+
+	if err := json.Unmarshal(decoded, &electionsResp); err != nil {
 		return nil, err
 	}
 
@@ -119,8 +134,14 @@ func (c *client) GetEarlyVotingData(electionID int, electionDate string) (*Civix
 		return nil, err
 	}
 
+	decoded, err := base64.StdEncoding.DecodeString(civixResp.Upload)
+	if err != nil {
+		return nil, err
+	}
+
 	var electionData CivixEarlyVotingElectionData
-	if err := civixResp.Decode(&electionData); err != nil {
+
+	if err := json.Unmarshal(decoded, &electionData); err != nil {
 		return nil, err
 	}
 

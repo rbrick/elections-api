@@ -1,5 +1,13 @@
 package models
 
+type InternalElectionMapping struct {
+	// the internal ID of the election, which is the same as the Election.ID field
+	ID               string `gorm:"column:id;primaryKey;autoIncrement:true"`
+	SourceElectionID string `gorm:"column:source_election_id;not null"`
+	Source           string `gorm:"column:source;not null"`
+	ElectionID       string `gorm:"column:election_id;not null"`
+}
+
 type Election struct {
 	// Unique ID for the election
 	ID string `gorm:"column:id;primaryKey"`
@@ -10,7 +18,16 @@ type Election struct {
 	// Source ID
 	Source string `gorm:"column:source;not null"`
 
-	Candidates []Candidate `gorm:"foreignKey:ElectionID;references:ID"`
+	ElectionMapping InternalElectionMapping `gorm:"foreignKey:ElectionID;references:ID"`
+	ElectionResult  ElectionResult          `gorm:"foreignKey:ElectionID;references:ID"`
+	Candidates      []Candidate             `gorm:"foreignKey:ElectionID;references:ID"`
+}
+
+type ElectionResult struct {
+	ID         string  `gorm:"column:id;primaryKey"`
+	ElectionID string  `gorm:"column:election_id;not null"`
+	Turnout    float64 `gorm:"column:turnout;not null"`
+	TotalVotes int     `gorm:"column:total_votes;not null"`
 }
 
 type Candidate struct {
